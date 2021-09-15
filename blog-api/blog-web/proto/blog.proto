@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+option go_package = ".;proto";
+
+service Blog {
+  rpc GetBlogList(PageInfo) returns (BlogListResponse); // blog列表
+  rpc GetArticleById(IdRequest) returns (ArticleInfoReponse); // 通过 id 查询blog
+  rpc UpdateArticle(UpdateArticleInfo) returns (google.protobuf.Empty); // 通过 id 查询blog
+  rpc CreateArticle(CreateArticleInfo) returns (ArticleInfoReponse); // 添加blog
+}
+
+message PageInfo {
+  uint32 pn = 1;
+  uint32 pSize = 2;
+}
+
+
+message IdRequest {
+  int32 id = 1;
+}
+
+message CreateArticleInfo {
+  string title = 1;
+  string tag = 2;
+  string description = 3;
+  string content = 4;
+  string articleId = 5;
+}
+
+message UpdateArticleInfo {
+  int32 id = 1;
+  string title = 2;
+  string tag = 3;
+  string description =4;
+  string content = 5;
+}
+
+message ArticleInfoReponse {
+  int32 id = 1;
+  string articleId = 2;
+  string title = 3;
+  string tag = 4;
+  string description = 5;
+  string content = 6;
+  int64 addTime = 7;
+  int64 updateTime = 8;
+}
+
+message BlogListResponse {
+  int32 total = 1;
+  repeated ArticleInfoReponse data = 2;
+}

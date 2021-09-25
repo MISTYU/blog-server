@@ -98,6 +98,9 @@ func GetBlogList(ctx *gin.Context) {
 		HandleGrpcErrorToHttp(err, ctx)
 		return
 	}
+	reMap := gin.H{
+		"total": rsp.Total,
+	}
 	result := make([]interface{}, 0)
 
 	for _, value := range rsp.Data {
@@ -115,7 +118,8 @@ func GetBlogList(ctx *gin.Context) {
 
 		result = append(result, blog)
 	}
-	ctx.JSON(http.StatusOK, result)
+	reMap["data"] = result
+	ctx.JSON(http.StatusOK, reMap)
 }
 
 func ArticleCreate(ctx *gin.Context) {
@@ -150,6 +154,39 @@ func ArticleCreate(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"id":    article.Id,
 		"Title": article.Title,
+	})
+}
+
+func GetArticleDetail(ctx *gin.Context) {
+	id := ctx.Query("id")
+	fmt.Println(id)
+	zap.S().Infof("访问用户: %d", id)
+	idInt, _ := strconv.Atoi(id)
+	blogConn, err := grpc.Dial(fmt.Sprintf("%s:%d", global.ServerConfig.UserSrvInfo.Host, global.ServerConfig.UserSrvInfo.Port), grpc.WithInsecure())
+	if err != nil {
+		zap.S().Errorw("[GetBlogList] 连接 [blog服务失败]",
+			"msg",
+			err.Error(),
+		)
+	}
+	// 生成 grpc 的 client 并调用接口
+	blogSrvClient := proto.NewBlogClient(blogConn)
+	rsp, err := blogSrvClient.GetArticleById(context.Background(), &proto.IdRequest{
+		Id: int32(idInt),
+	})
+	if err != nil {
+		HandleGrpcErrorToHttp(err, ctx)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"title":       rsp.Title,
+		"add_time":    time.Unix(int64(rsp.AddTime), 0).Format("2006-01-02"),
+		"tag":         rsp.Tag,
+		"description": rsp.Description,
+		"artile_id":   rsp.ArticleId,
+		"content":     rsp.Content,
+		"update_time": rsp.UpdateTime,
+		"id":          rsp.Id,
 	})
 }
 

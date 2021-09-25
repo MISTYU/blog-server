@@ -1,4 +1,4 @@
-srv_name="blog_web_main"
+srv_name="main"
 chmod +x ./$srv_name
 # 重启，如果已经存在则关闭重启
 if pgrep -x $srv_name > /dev/null

@@ -20,9 +20,9 @@ func InitConfig() {
 	debug := GetEnvInfo("BLOG_DEBUG")
 	configFilePrefix := "config"
 	// C:\Users\Administrator\Desktop\blog-api\blog-web
-	configFileName := fmt.Sprintf("C:/Users/Administrator/Desktop/blog-api/blog-web/%s-pro.yaml", configFilePrefix)
+	configFileName := fmt.Sprintf("blog-web/%s-pro.yaml", configFilePrefix)
 	if debug {
-		configFileName = fmt.Sprintf("C:/Users/Administrator/Desktop/blog-api/blog-web/%s-debug.yaml", configFilePrefix)
+		configFileName = fmt.Sprintf("blog-web/%s-debug.yaml", configFilePrefix)
 	}
 
 	v := viper.New()

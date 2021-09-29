@@ -110,10 +110,8 @@ func GetBlogList(ctx *gin.Context) {
 			Title:       value.Title,
 			Tag:         value.Tag,
 			Description: value.Description,
-			Content:     value.Content,
 			ArticleId:   value.ArticleId,
 			AddTime:     response.JsonTime(time.Unix(int64(value.AddTime), 0)),
-			UpdateTime:  response.JsonTime(time.Unix(int64(value.UpdateTime), 0)),
 		}
 
 		result = append(result, blog)

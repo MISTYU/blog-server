@@ -38,5 +38,5 @@ func main() {
 	}
 
 	// 同步表
-	_ = db.AutoMigrate(&model.Blog{})
+	_ = db.AutoMigrate(&model.Blog{}) // 新建了 blog 表和 article 表，并设置了外键
 }

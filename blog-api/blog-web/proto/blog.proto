@@ -47,6 +47,15 @@ message ArticleInfoReponse {
   int64 updateTime = 8;
 }
 
+message ArticleListReponse {
+  int32 id = 1;
+  string articleId = 2;
+  string title = 3;
+  string tag = 4;
+  string description = 5;
+  int64 addTime = 7;
+}
+
 message BlogListResponse {
   int32 total = 1;
   repeated ArticleInfoReponse data = 2;

@@ -23,10 +23,10 @@ func ModelToRsponse(blog model.Blog) proto.ArticleInfoReponse {
 		Title:       blog.Title,
 		Tag:         blog.Tag,
 		Description: blog.Description,
-		Content:     blog.Content,
 		ArticleId:   blog.ArticleId,
 		AddTime:     blog.CreatedAt.Unix(),
 		UpdateTime:  blog.UpdatedAt.Unix(),
+		Content:     blog.Blogdetail.Content,
 	}
 	return blogInfoRsp
 }
@@ -80,7 +80,6 @@ func (s *BlogServer) UpdateArticle(ctx context.Context, req *proto.UpdateArticle
 	blog.Title = req.Title
 	blog.Tag = req.Tag
 	blog.Description = req.Description
-	blog.Content = req.Content
 
 	result = global.DB.Save(&blog)
 	if result.Error != nil {
@@ -92,14 +91,13 @@ func (s *BlogServer) UpdateArticle(ctx context.Context, req *proto.UpdateArticle
 func (s *BlogServer) GetArticleById(ctx context.Context, req *proto.IdRequest) (*proto.ArticleInfoReponse, error) {
 	// 通过 id 查询 blog
 	var blog model.Blog
-	result := global.DB.First(&blog, req.Id)
+	result := global.DB.Joins("Blogdetail").First(&blog, req.Id)
 	if result.RowsAffected == 0 {
 		return nil, status.Errorf(codes.NotFound, "博客不存在")
 	}
 	if result.Error != nil {
 		return nil, result.Error
 	}
-
 	userInfoRsp := ModelToRsponse(blog)
 	return &userInfoRsp, nil
 }
@@ -111,7 +109,9 @@ func (s *BlogServer) CreateArticle(ctx context.Context, req *proto.CreateArticle
 	blog.Title = req.Title
 	blog.Tag = req.Tag
 	blog.Description = req.Description
-	blog.Content = req.Content
+	blog.Blogdetail = model.Blogdetail{
+		Content: req.Content,
+	}
 
 	result := global.DB.Create(&blog)
 
